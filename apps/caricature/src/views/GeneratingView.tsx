@@ -59,7 +59,7 @@ export const GeneratingView = () => {
             fetch("https://api.openai.com/v1/images/edits", {
               method: "POST",
               headers: {
-                "Authorization": `Bearer ${process.env.GENERATING_API_KEY}`
+                "Authorization": `Bearer ${import.meta.env.VITE_GENERATING_API_KEY}`
               },
               body: createFormData(prompt)
             }).then(response => response.json())
