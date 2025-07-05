@@ -10,7 +10,7 @@ export const GeneratingView = () => {
 
   useEffect(() => {
     if (progress < 100 && !error) {
-      const timer = setTimeout(() => setProgress(progress + 1), 400);
+      const timer = setTimeout(() => setProgress(progress + 1), 300);
       return () => clearTimeout(timer);
     }
   }, [progress, error]);
@@ -93,7 +93,7 @@ export const GeneratingView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img src="logo.png" alt="logo" className="w-60 mb-8" />
+      <img src="logo.png" alt="logo" className="w-72 mb-8" />
       <div className="mt-4">
         <div className="relative flex items-center justify-center w-[450px] h-[450px] rounded-full overflow-hiddenimgCard">
           <video
@@ -115,9 +115,9 @@ export const GeneratingView = () => {
             <circle
               cx="225"
               cy="225"
-              r="210"
+              r="215"
               stroke="#FF0000"
-              strokeWidth="15"
+              strokeWidth="4"
               strokeDasharray="1200 180"
               strokeDashoffset="0"
               stroke-linecap="round"

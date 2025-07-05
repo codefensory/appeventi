@@ -73,7 +73,7 @@ export const CameraView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img src="logo.png" alt="logo" className="w-60 mb-8" />
+      <img src="logo.png" alt="logo" className="w-72 mb-8" />
       <div className="mt-4 relative">
         <div className="h-[500px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
           <video

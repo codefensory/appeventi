@@ -7,7 +7,7 @@ export const HomeView = () => {
 
   return (
     <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center flex-col gap-12">
-      <img src="logo.png" alt="logo" className="w-60 mb-8" />
+      <img src="logo.png" alt="logo" className="w-72 mb-8" />
       <ImageCarousel className="w-full" />
       <h2 className="text-4xl text-center text-gray-800 mt-6">
         Toca la pantalla y <br />

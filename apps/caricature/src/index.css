@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @font-face {
   font-family: 'Comfortaa';
-  src: url('/fonts/Comfortaa.ttf') format('truetype');
+  src: url('/Comfortaa.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

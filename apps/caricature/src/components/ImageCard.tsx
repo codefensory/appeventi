@@ -11,7 +11,7 @@ interface ImageCardProps {
 export const ImageCard: React.FC<ImageCardProps> = ({
   src,
   alt,
-  selected = false,
+  selected = undefined,
   onClick,
   className,
 }) => (
@@ -36,24 +36,25 @@ export const ImageCard: React.FC<ImageCardProps> = ({
         }}
       />
     </div>
-    {/* SVG para el borde circular con gap */}
-    <svg
-      className="absolute inset-0 w-full h-full"
-      viewBox="0 0 320 320"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle
-        cx="160"
-        cy="160"
-        r="150"
-        stroke="#FF0000"
-        strokeWidth="10"
-        strokeDasharray="850 120"
-        stroke-linecap="round"
-        strokeDashoffset="0"
-        transform="rotate(107 160 160)"
-      />
-    </svg>
+    {(selected === undefined || selected === true) && 
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 320 320"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle
+          cx="160"
+          cy="160"
+          r="150"
+          stroke="#FF0000"
+          strokeWidth="4"
+          strokeDasharray="850 120"
+          stroke-linecap="round"
+          strokeDashoffset="0"
+          transform="rotate(107 160 160)"
+        />
+      </svg>
+    }
   </div>
 );
