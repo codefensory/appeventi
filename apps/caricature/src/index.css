@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+.embla {
+  /* overflow: hidden; */
+}
+
+.embla__container {
+  display: flex;
+}
+
+.embla__slide {
+  flex: 0 0 40%;
+  min-width: 0;
+  margin: 0 12px;
+}
+
+@keyframes soft-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-2px);
+  }
+}
+
+.button-animate {
+  animation: soft-bounce 2s infinite ease-in-out;
+}
+
+.imgCard {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
