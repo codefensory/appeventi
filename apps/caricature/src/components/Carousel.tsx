@@ -21,10 +21,11 @@ export const ImageCarousel = ({ className }: { className?: string }) => {
   return (
     <div className={"embla w-full " + className} ref={emblaRef}>
       <div className="embla__container">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <ImageCard
+        {Array.from({ length: 6 }).map((_, index) => (
+          <img
             className="embla__slide"
             src={`examples/slider-${index + 1}.png`}
+            alt={`menu-${index}`}
           />
         ))}
       </div>

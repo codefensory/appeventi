@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import useViewStore from "../lib/view-manager/view-manager-store";
-import { CircularButton } from "../components/Button";
+import { Button } from "../components/Button";
 
 export const CameraView = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -73,8 +73,9 @@ export const CameraView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
+      <img src="logo.png" alt="logo" className="w-60 mb-8" />
       <div className="mt-4 relative">
-        <div className="h-[600px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
+        <div className="h-[500px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
           <video
             ref={videoRef}
             autoPlay
@@ -111,29 +112,14 @@ export const CameraView = () => {
       </div>
       
       <div className="flex flex-row gap-8 mt-4">
-        <CircularButton
-          variant="outline"
-          className="text-xl"
-          size="lg"
-          onClick={() => setView("preview")}
-          disabled={isCapturing}
-        >
-          Volver
-        </CircularButton>
-        <CircularButton
-          variant="default"
-          className="text-xl"
-          size="lg"
-          onClick={startCountdown}
-          animate={!isCapturing}
-          disabled={isCapturing}
-        >
+        <Button className="text-xl" variant="outline" onClick={() => setView("preview")} disabled={isCapturing}>Volver</Button>
+        <Button className="text-xl" onClick={startCountdown} disabled={isCapturing} animated>
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="32" height="32">
             <circle cx="12" cy="13" r="3.2" stroke="white" strokeWidth="2" />
             <rect x="4" y="7" width="16" height="12" rx="3" stroke="white" strokeWidth="2" />
             <rect x="9" y="2" width="6" height="4" rx="2" stroke="white" strokeWidth="2" />
           </svg>
-        </CircularButton>
+        </Button>
       </div>
     </div>
   );

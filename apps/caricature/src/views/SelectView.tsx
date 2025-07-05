@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useViewStore from "../lib/view-manager/view-manager-store";
 import { ImageCard } from "../components/ImageCard";
-import { CircularButton } from "../components/Button";
+import { Button } from "../components/Button";
 
 export const SelectView = () => {
   const generatedImages = useViewStore((s) => s.generatedImages);
@@ -21,7 +21,8 @@ export const SelectView = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6">
-      <div className="flex flex-row gap-8">
+      <img src="logo.png" alt="logo" className="w-60 mb-8" />
+      <div className="flex flex-row gap-2">
         {generatedImages.map((image, index) => (
           <ImageCard 
             key={index}
@@ -36,16 +37,14 @@ export const SelectView = () => {
         <p className="text-xl font-bold mt-2">Tu caricatura está lista</p>
         <p className="text-md mt-1">Selecciona tu favorita</p>
       </div>
-      <CircularButton
-        variant="outline"
-        size="lg"
+      <Button
         className="mt-8 text-xl"
         disabled={selectedIdx === null}
         onClick={handleNext}
-        animate={selectedIdx !== null}
+        animated
       >
         Siguiente
-      </CircularButton>
+      </Button>
     </div>
   );
 };

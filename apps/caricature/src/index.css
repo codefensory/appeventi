@@ -1,4 +1,15 @@
 @import "tailwindcss";
+@font-face {
+  font-family: 'Comfortaa';
+  src: url('/fonts/Comfortaa.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Comfortaa', sans-serif;
+}
+
 
 .embla {
   /* overflow: hidden; */
@@ -10,8 +21,13 @@
 
 .embla__slide {
   flex: 0 0 40%;
-  min-width: 0;
+  width: 320px;
+  max-width: 320px;
+  min-width: 320px;
   margin: 0 12px;
+  transition: none !important;
+  border: 3px solid rgba(255, 0, 0, 0.70);
+  border-radius: 32px;
 }
 
 @keyframes soft-bounce {
@@ -30,7 +46,7 @@
   }
 }
 
-.button-animate {
+.btn-animate {
   animation: soft-bounce 2s infinite ease-in-out;
 }
 

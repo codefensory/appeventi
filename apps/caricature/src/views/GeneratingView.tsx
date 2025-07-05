@@ -10,7 +10,7 @@ export const GeneratingView = () => {
 
   useEffect(() => {
     if (progress < 100 && !error) {
-      const timer = setTimeout(() => setProgress(progress + 1), 200);
+      const timer = setTimeout(() => setProgress(progress + 1), 400);
       return () => clearTimeout(timer);
     }
   }, [progress, error]);
@@ -45,14 +45,14 @@ export const GeneratingView = () => {
             formData.append('model', 'gpt-image-1');
             formData.append('image', blob, 'captured_image.png');
             formData.append('prompt', prompt);
-            formData.append('quality', 'low');
+            formData.append('quality', 'medium');
             formData.append('size', '1024x1024');
             return formData;
           };
 
           const prompts = [
-            'A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Portrait photo type',
-            'A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Draw only from the waist up.'
+            "A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art. Portrait photo type",
+            "A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art Draw only from the waist up."
           ];
 
           const requests = prompts.map(prompt => 
@@ -93,16 +93,37 @@ export const GeneratingView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
+      <img src="logo.png" alt="logo" className="w-60 mb-8" />
       <div className="mt-4">
-        <div className="w-[600px] h-[500px] rounded-3xl overflow-hidden bg-black/10 flex items-center justify-center imgCard">
+        <div className="relative flex items-center justify-center w-[450px] h-[450px] rounded-full overflow-hiddenimgCard">
           <video
             src="pepe.mp4"
-            className="w-full h-full object-cover"
+            className="w-[calc(100%-20px)] h-[calc(100%-20px)] object-cover"
             autoPlay
             loop
             muted
             playsInline
+            style={{ borderRadius: '50%' }}
           />
+          {/* SVG para el borde circular con gap */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            viewBox="0 0 450 450"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle
+              cx="225"
+              cy="225"
+              r="210"
+              stroke="#FF0000"
+              strokeWidth="15"
+              strokeDasharray="1200 180"
+              strokeDashoffset="0"
+              stroke-linecap="round"
+              transform="rotate(107 225 225)"
+            />
+          </svg>
         </div>
       </div>
       <div className="w-[320px] h-2 rounded-full bg-gray-200 overflow-hidden">
@@ -120,7 +141,7 @@ export const GeneratingView = () => {
         ) : (
           <>
             <h2 className="text-2xl font-black text-center text-black">Solo un momento</h2>
-            <p className="text-lg text-center text-gray-700">Mientras pepe te dibuja</p>
+            <p className="text-lg text-center text-gray-700">Mientras nuestro artista te dibuja</p>
           </>
         )}
       </div>

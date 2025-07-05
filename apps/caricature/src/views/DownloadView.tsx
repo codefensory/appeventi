@@ -1,6 +1,6 @@
 import useViewStore from "../lib/view-manager/view-manager-store";
 import QRCode from "react-qr-code";
-import { CircularButton } from "../components/Button";
+import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
@@ -22,23 +22,66 @@ export const DownloadView = () => {
   const setView = useViewStore((s) => s.setView);
 
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
-    const uploadToCloudinary = async () => {
+    const processAndUpload = async () => {
       setLoading(true);
       setError(null);
       try {
         // Si la imagen ya es una URL remota, no la subas
         if (selectedImage.startsWith("http")) {
           setCloudinaryUrl(selectedImage);
+          setPreviewUrl(selectedImage);
           setLoading(false);
           return;
         }
+
+        // 1. Cargar imagen original (caricatura)
+        const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const image = new window.Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = selectedImage;
+        });
+
+        // 2. Cargar el marco
+        const frame = await new Promise<HTMLImageElement>((resolve, reject) => {
+          const image = new window.Image();
+          image.onload = () => resolve(image);
+          image.onerror = reject;
+          image.src = "/frame.png";
+        });
+
+        // 3. Crear canvas del tamaño del marco
+        const canvas = document.createElement("canvas");
+        canvas.width = frame.width;
+        canvas.height = frame.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) throw new Error("No se pudo crear el contexto del canvas");
+
+        // 4. Dibujar el marco como fondo
+        ctx.drawImage(frame, 0, 0, frame.width, frame.height);
+
+        // 5. Dibujar la imagen generada en la posición y tamaño deseados
+        ctx.drawImage(img, 40, 25, 1084, 1084);
+
+        // 6. Guardar preview del canvas
+        const dataUrl = canvas.toDataURL("image/png");
+        if (isMounted) setPreviewUrl(dataUrl);
+
+        // 7. Convertir canvas a blob
+        const blob = await new Promise<Blob | null>((resolve) =>
+          canvas.toBlob(resolve, "image/png")
+        );
+        if (!blob) throw new Error("No se pudo convertir el canvas a imagen");
+
+        // 8. Subir a Cloudinary
         const formData = new FormData();
-        formData.append("file", selectedImage);
+        formData.append("file", blob, "caricatura.png");
         formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
         const res = await fetch(CLOUDINARY_API, {
           method: "POST",
@@ -55,12 +98,12 @@ export const DownloadView = () => {
         }
       } catch (e) {
         if (isMounted) {
-          setError("Error subiendo la imagen a Cloudinary");
+          setError("Error procesando o subiendo la imagen");
           setLoading(false);
         }
       }
     };
-    uploadToCloudinary();
+    processAndUpload();
     return () => {
       isMounted = false;
     };
@@ -81,24 +124,28 @@ export const DownloadView = () => {
         <div className="text-red-600 font-bold">{error}</div>
       ) : (
         <>
-          <h2 className="text-4xl font-black text-center text-gray-800 mb-2">
-            Descarga tu caricatura
-          </h2>
+          <img src="logo.png" alt="logo" className="w-60 mb-8" />
           <div className="relative flex items-center justify-center">
-            <img
-              src={selectedImage}
-              alt="Caricatura seleccionada"
-              className="w-96 h-96 object-cover rounded-3xl border-8 border-red-400 shadow-2xl transition-all duration-300"
-              style={{
-                boxShadow:
-                  "0 8px 40px 0 rgba(239,68,68,0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10)",
-              }}
-            />
-            <span className="absolute -top-2 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs px-3 py-1 rounded-full shadow font-bold opacity-90">
-              Tu caricatura
-            </span>
+            {previewUrl ? (
+              <img
+                src={previewUrl}
+                alt="Caricatura generada"
+                className="w-96 object-cover rounded-3xl border-4 border-red-400 shadow-2xl transition-all duration-300"
+                style={{
+                  boxShadow:
+                    "0 8px 40px 0 rgba(239,68,68,0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10)",
+                }}
+              />
+            ) : (
+              <div className="w-96 h-96 flex items-center justify-center bg-gray-100 rounded-3xl animate-pulse">
+                <span className="text-gray-400">Cargando preview...</span>
+              </div>
+            )}
           </div>
           <div className="flex flex-col items-center gap-3 mt-2">
+            <h2 className="text-3xl font-black text-center text-gray-800">
+              ¡Te ves super!
+            </h2>
             <span className="text-lg font-bold text-gray-700 mb-1">
               Escanea el QR para descargar
             </span>
@@ -112,15 +159,13 @@ export const DownloadView = () => {
               />
             </div>
           </div>
-          <CircularButton
-            variant="default"
+          <Button
             className="text-xl mt-2"
-            size="lg"
             onClick={() => setView("home")}
             disabled={loading}
           >
             Finalizar
-          </CircularButton>
+          </Button>
         </>
       )}
     </div>
