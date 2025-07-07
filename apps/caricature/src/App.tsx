@@ -23,7 +23,7 @@ const CustomView: typeof View = ({ viewId, children }) => (
     <div className="absolute top-0 left-0 w-full h-full shadow-2xl" />
     <div className="absolute top-0 left-0 w-full h-full" />
     <div
-      className="w-full h-full bg-repeat opacity-20 absolute top-0 left-0"
+      className="w-full h-full bg-repeat opacity-[14%] absolute top-0 left-0"
       style={{ background: "url(background.png)", backgroundSize: "400px" }}
     />
     <div className="absolute top-0 left-0 w-full h-full">{children}</div>
@@ -42,9 +42,9 @@ const App = () => {
       <CustomView viewId="home">
         <HomeView />
       </CustomView>
-        <CustomView viewId="preview">
-          <PreviewView />
-        </CustomView>
+      <CustomView viewId="preview">
+        <PreviewView />
+      </CustomView>
       <CustomView viewId="camera">
         <CameraView />
       </CustomView>
@@ -57,12 +57,15 @@ const App = () => {
       <CustomView viewId="download">
         <DownloadView />
       </CustomView>
-      <div className="absolute top-0 right-0 w-30 h-30 bg-transparent" onClick={() => {
-        const currentView = useViewStore.getState().currentView
+      <div
+        className="absolute top-0 right-0 w-30 h-30 bg-transparent"
+        onClick={() => {
+          const currentView = useViewStore.getState().currentView;
 
-        if (currentView !== "home" && currentView !== "generating")
-        setView("home")
-      }}></div>
+          if (currentView !== "home" && currentView !== "generating")
+            setView("home");
+        }}
+      ></div>
     </div>
   );
 };
