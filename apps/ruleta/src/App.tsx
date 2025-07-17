@@ -34,7 +34,7 @@ const prizes: Prize[] = [
     name: "50%\nDESCTO\nALCOHOL\nEN GEL",
     color: "#FFB3C1",
     textColor: "#000",
-    image: "/5%-dscto.png",
+    image: "/dscto.png",
     imageWidth: "auto",
     imageHeight: "65px",
   },
