@@ -92,6 +92,7 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [spinCount, setSpinCount] = useState(0);
   const wheelRef = useRef<HTMLDivElement>(null);
+  const [resetHoldTimer, setResetHoldTimer] = useState<number | null>(null);
 
   const spinWheel = () => {
     if (isSpinning) return;
@@ -146,6 +147,20 @@ function App() {
   };
 
   const [circlePositions] = useState(generateCirclePositions());
+
+  const handleResetPress = () => {
+    const timer = setTimeout(() => {
+      resetWheel();
+    }, 5000);
+    setResetHoldTimer(timer);
+  };
+
+  const handleResetRelease = () => {
+    if (resetHoldTimer) {
+      clearTimeout(resetHoldTimer);
+      setResetHoldTimer(null);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
@@ -289,17 +304,19 @@ function App() {
         >
           {isSpinning ? "GIRANDO..." : "GIRAR"}
         </button>
-
-        {spinCount > 0 && (
-          <button
-            onClick={resetWheel}
-            disabled={isSpinning}
-            className="px-6 py-4 bg-gray-500 text-white font-bold rounded-full shadow-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50"
-          >
-            RESET
-          </button>
-        )}
       </div>
+
+      {/* Special reset button */}
+      <button
+        aria-label="Special reset button"
+        onMouseDown={handleResetPress}
+        onMouseUp={handleResetRelease}
+        onMouseLeave={handleResetRelease} // In case the mouse leaves the element before releasing
+        onTouchStart={handleResetPress}
+        onTouchEnd={handleResetRelease}
+        className="fixed top-0 right-0 w-16 h-16 rounded-full bg-transparent z-50 cursor-pointer"
+        style={{ cursor: 'url("/cursor-grab.png"), auto' }} // Example custom cursor
+      ></button>
 
       <div className="mt-8 z-10 text-center max-w-md">
         <p className="text-gray-600 text-sm leading-relaxed">
