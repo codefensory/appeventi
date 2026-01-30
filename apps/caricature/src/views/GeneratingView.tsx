@@ -93,37 +93,18 @@ export const GeneratingView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img src="logo.png" alt="logo" className="h-26 mb-8" />
       <div className="mt-4">
         <div className="relative flex items-center justify-center w-[450px] h-[450px] rounded-full overflow-hiddenimgCard">
           <video
             src="pepe.mp4"
-            className="w-[calc(100%-20px)] h-[calc(100%-20px)] object-cover"
+            className="w-[calc(100%-20px)] h-[calc(100%-20px)] object-cover rounded-full border-2 border-[#D01B52]"
             autoPlay
             loop
             muted
             playsInline
-            style={{ borderRadius: '50%' }}
+            style={{ boxSizing: 'border-box' }}
           />
-          {/* SVG para el borde circular con gap */}
-          <svg
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            viewBox="0 0 450 450"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <circle
-              cx="225"
-              cy="225"
-              r="215"
-              stroke="#D01B52"
-              strokeWidth="4"
-              strokeDasharray="1200 180"
-              strokeDashoffset="0"
-              stroke-linecap="round"
-              transform="rotate(107 225 225)"
-            />
-          </svg>
         </div>
       </div>
       <div className="w-[320px] h-2 rounded-full bg-gray-200 overflow-hidden">

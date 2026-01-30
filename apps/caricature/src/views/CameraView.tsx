@@ -32,7 +32,7 @@ export const CameraView = () => {
   const startCountdown = () => {
     setIsCapturing(true);
     setCountdown(3);
-    
+
     const countdownInterval = setInterval(() => {
       setCountdown((prev) => {
         if (prev === null || prev <= 1) {
@@ -45,7 +45,7 @@ export const CameraView = () => {
 
     setTimeout(() => {
       setShowFlash(true);
-      
+
       if (!videoRef.current || !canvasRef.current) return;
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -61,11 +61,11 @@ export const CameraView = () => {
       setTimeout(() => {
         setShowFlash(false);
         setIsCapturing(false);
-        
+
         if (stream) {
           stream.getTracks().forEach((track) => track.stop());
         }
-        
+
         setView("generating");
       }, 500);
     }, 3000);
@@ -73,7 +73,7 @@ export const CameraView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img src="logo.png" alt="logo" className="h-26 mb-8" />
       <div className="mt-4 relative">
         <div className="h-[500px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
           <video
@@ -84,12 +84,12 @@ export const CameraView = () => {
             style={{ background: "transparent" }}
           />
           <canvas ref={canvasRef} style={{ display: "none" }} />
-          
+
           {/* Flash overlay */}
           {showFlash && (
             <div className="absolute inset-0 bg-white opacity-80 z-10 rounded-3xl" />
           )}
-          
+
           {/* Countdown overlay */}
           {countdown !== null && (
             <div className="absolute inset-0 flex items-center justify-center z-20">
@@ -100,7 +100,7 @@ export const CameraView = () => {
           )}
         </div>
       </div>
-      
+
       <div className="flex flex-col items-center gap-2">
         <h2 className="text-3xl font-black text-center text-gray-800">
           {isCapturing ? "¡Sonríe!" : "Acomódate bien"}
@@ -110,7 +110,7 @@ export const CameraView = () => {
         </p>
         <span className="text-sm text-gray-500">(La imagen solo se usará para la caricatura)</span>
       </div>
-      
+
       <div className="flex flex-row gap-8 mt-4">
         <Button className="text-xl" variant="outline" onClick={() => setView("preview")} disabled={isCapturing}>Volver</Button>
         <Button className="text-xl" onClick={startCountdown} disabled={isCapturing} animated>

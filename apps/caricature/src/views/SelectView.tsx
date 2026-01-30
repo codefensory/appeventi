@@ -21,14 +21,14 @@ export const SelectView = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img src="logo.png" alt="logo" className="h-26 mb-8" />
       <div className="flex flex-row gap-2">
         {generatedImages.map((image, index) => (
-          <ImageCard 
+          <ImageCard
             key={index}
-            src={image} 
-            selected={selectedIdx === index} 
-            onClick={() => handleSelect(index)} 
+            src={image}
+            selected={selectedIdx === index}
+            onClick={() => handleSelect(index)}
           />
         ))}
       </div>

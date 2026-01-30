@@ -31,7 +31,6 @@ export const Button: React.FC<ButtonProps> = ({
     rounded-full
     shadow-md
     transition-all duration-200 ease-in-out
-    focus:outline-none focus:ring-4 focus:ring-red-400 focus:ring-opacity-50
     active:scale-95
     disabled:opacity-50 disabled:cursor-not-allowed
     disabled:bg-gray-300 disabled:text-gray-500 disabled:border-gray-300
@@ -39,8 +38,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses =
     variant === "outline"
-      ? "bg-white text-[#D01B52] border-2 border-[#D01B52] hover:bg-red-50 hover:text-[#B01745]"
-      : "bg-[#D01B52] text-white hover:bg-[#B01745]";
+      ? "bg-white text-[#D01B52] border-2 border-[#D01B52]"
+      : "bg-[#D01B52] text-white";
 
   return (
     <button

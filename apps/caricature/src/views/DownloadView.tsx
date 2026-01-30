@@ -115,7 +115,7 @@ export const DownloadView = () => {
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center justify-center gap-8">
       {loading ? (
         <div className="flex flex-col items-center gap-4 mt-8">
-          <div className="w-24 h-24 border-8 border-red-200 border-t-red-500 rounded-full animate-spin" />
+          <div className="w-24 h-24 rounded-full border-2 border-[#D01B52] bg-white" />
           <span className="text-lg font-bold text-gray-600 animate-pulse">
             Preparando tu caricatura...
           </span>
@@ -130,7 +130,7 @@ export const DownloadView = () => {
               <img
                 src={previewUrl}
                 alt="Caricatura generada"
-                className="w-96 object-cover rounded-3xl border-4 border-red-400 shadow-2xl transition-all duration-300"
+                className="w-96 object-cover rounded-3xl shadow-2xl transition-all duration-300"
                 style={{
                   boxShadow:
                     "0 8px 40px 0 rgba(239,68,68,0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10)",
@@ -149,7 +149,7 @@ export const DownloadView = () => {
             <span className="text-lg font-bold text-gray-700 mb-1">
               Escanea el QR para descargar
             </span>
-            <div className="bg-white p-3 rounded-xl shadow-lg border border-red-200">
+            <div className="bg-white p-3 rounded-xl shadow-lg">
               <QRCode
                 value={qrValue ?? ""}
                 size={140}

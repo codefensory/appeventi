@@ -29,32 +29,14 @@ export const ImageCard: React.FC<ImageCardProps> = ({
       <img
         src={src}
         alt={alt}
-        className="w-[calc(100%-20px)] h-[calc(100%-20px)] rounded-full object-cover"
+        className={`w-[calc(100%-20px)] h-[calc(100%-20px)] rounded-full object-cover ${selected ? 'border-4 border-[#D01B52]' : 'border-2 border-[#D01B52]'}`}
         draggable={false}
         style={{
-          boxShadow: selected ? "0 0 24px 0 rgba(255,0,0,0.3)" : undefined,
+          boxShadow: selected ? "0 0 24px 0 #d01b524d" : undefined,
+          boxSizing: 'border-box'
         }}
       />
     </div>
-    {(selected === undefined || selected === true) &&
-      <svg
-        className="absolute inset-0 w-full h-full"
-        viewBox="0 0 320 320"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <circle
-          cx="160"
-          cy="160"
-          r="150"
-          stroke="#D01B52"
-          strokeWidth="4"
-          strokeDasharray="850 120"
-          stroke-linecap="round"
-          strokeDashoffset="0"
-          transform="rotate(107 160 160)"
-        />
-      </svg>
-    }
+    {/* Borde aplicado en la propia imagen, sin overlay SVG/absolute */}
   </div>
 );
