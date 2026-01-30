@@ -36,7 +36,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
         }}
       />
     </div>
-    {(selected === undefined || selected === true) && 
+    {(selected === undefined || selected === true) &&
       <svg
         className="absolute inset-0 w-full h-full"
         viewBox="0 0 320 320"
@@ -47,7 +47,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
           cx="160"
           cy="160"
           r="150"
-          stroke="#FF0000"
+          stroke="#D01B52"
           strokeWidth="4"
           strokeDasharray="850 120"
           stroke-linecap="round"

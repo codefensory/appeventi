@@ -121,10 +121,10 @@ export const DownloadView = () => {
           </span>
         </div>
       ) : error ? (
-        <div className="text-red-600 font-bold">{error}</div>
+        <div className="text-[#D01B52] font-bold">{error}</div>
       ) : (
         <>
-          <img src="logo.png" alt="logo" className="w-72 mb-8" />
+          <img src="logo.png" alt="logo" className="h-26 mb-8" />
           <div className="relative flex items-center justify-center">
             {previewUrl ? (
               <img

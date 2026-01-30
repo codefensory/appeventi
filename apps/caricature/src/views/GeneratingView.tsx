@@ -30,7 +30,7 @@ export const GeneratingView = () => {
       (async () => {
         try {
           const base64 = capturedImage.split(",")[1];
-          
+
           const byteCharacters = atob(base64);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
@@ -38,7 +38,7 @@ export const GeneratingView = () => {
           }
           const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: 'image/png' });
-          
+
           // Crear las dos peticiones en paralelo
           const createFormData = (prompt: string) => {
             const formData = new FormData();
@@ -55,7 +55,7 @@ export const GeneratingView = () => {
             "A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art Draw only from the waist up."
           ];
 
-          const requests = prompts.map(prompt => 
+          const requests = prompts.map(prompt =>
             fetch("https://api.openai.com/v1/images/edits", {
               method: "POST",
               headers: {
@@ -66,17 +66,17 @@ export const GeneratingView = () => {
           );
 
           const [data1, data2] = await Promise.all(requests);
-        
+
           if (
             data1.data && data1.data[0] && data1.data[0].b64_json &&
             data2.data && data2.data[0] && data2.data[0].b64_json
           ) {
             const generatedBase64_1 = data1.data[0].b64_json;
             const generatedDataUrl_1 = `data:image/png;base64,${generatedBase64_1}`;
-            
+
             const generatedBase64_2 = data2.data[0].b64_json;
             const generatedDataUrl_2 = `data:image/png;base64,${generatedBase64_2}`;
-            
+
             setGeneratedImages([generatedDataUrl_1, generatedDataUrl_2]);
             setView("select");
           } else {
@@ -116,7 +116,7 @@ export const GeneratingView = () => {
               cx="225"
               cy="225"
               r="215"
-              stroke="#FF0000"
+              stroke="#D01B52"
               strokeWidth="4"
               strokeDasharray="1200 180"
               strokeDashoffset="0"
@@ -128,14 +128,14 @@ export const GeneratingView = () => {
       </div>
       <div className="w-[320px] h-2 rounded-full bg-gray-200 overflow-hidden">
         <div
-          className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-200"
+          className="h-full bg-gradient-to-r from-[#D01B52] to-[#A0143F] transition-all duration-200"
           style={{ width: `${progress}%` }}
         ></div>
       </div>
       <div className="flex flex-col items-center gap-2 mt-2">
         {error ? (
           <>
-            <h2 className="text-2xl font-black text-center text-red-600">¡Ups! Hubo un error</h2>
+            <h2 className="text-2xl font-black text-center text-[#D01B52]">¡Ups! Hubo un error</h2>
             <p className="text-lg text-center text-gray-700">{error}</p>
           </>
         ) : (

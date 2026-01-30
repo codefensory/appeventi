@@ -39,8 +39,8 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantClasses =
     variant === "outline"
-      ? "bg-white text-red-600 border-2 border-red-600 hover:bg-red-50 hover:text-red-700"
-      : "bg-red-600 text-white hover:bg-red-700";
+      ? "bg-white text-[#D01B52] border-2 border-[#D01B52] hover:bg-red-50 hover:text-[#B01745]"
+      : "bg-[#D01B52] text-white hover:bg-[#B01745]";
 
   return (
     <button

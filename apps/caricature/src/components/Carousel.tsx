@@ -21,7 +21,7 @@ export const ImageCarousel = ({ className }: { className?: string }) => {
   return (
     <div className={"embla w-full " + className} ref={emblaRef}>
       <div className="embla__container">
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 4 }).map((_, index) => (
           <img
             className="embla__slide"
             src={`examples/slider-${index + 1}.png`}
