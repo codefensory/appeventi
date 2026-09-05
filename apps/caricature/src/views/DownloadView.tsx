@@ -20,6 +20,7 @@ export const DownloadView = () => {
       return ejemplos[Math.floor(Math.random() * ejemplos.length)];
     })();
   const setView = useViewStore((s) => s.setView);
+  const clearContactFormData = useViewStore((s) => s.clearContactFormData);
 
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -124,7 +125,11 @@ export const DownloadView = () => {
         <div className="text-red-600 font-bold">{error}</div>
       ) : (
         <>
-          <img src="logo.png" alt="logo" className="w-72 mb-8" />
+          <img
+          src="/logo.png"
+          alt="Santa Clara Camiones"
+          className="brand-logo"
+        />
           <div className="relative flex items-center justify-center">
             {previewUrl ? (
               <img
@@ -161,7 +166,10 @@ export const DownloadView = () => {
           </div>
           <Button
             className="text-xl mt-2"
-            onClick={() => setView("home")}
+            onClick={() => {
+              clearContactFormData();
+              setView("home");
+            }}
             disabled={loading}
           >
             Finalizar

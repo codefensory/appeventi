@@ -54,7 +54,8 @@ export const CameraView = () => {
       const ctx = canvas.getContext("2d");
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL("image/png");
+        // JPEG reduce el tamaño de la petición al endpoint serverless de Vercel.
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
         setCapturedImage(dataUrl);
       }
 
@@ -73,7 +74,11 @@ export const CameraView = () => {
 
   return (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img
+      src="/logo.png"
+      alt="Santa Clara Camiones"
+      className="brand-logo"
+    />
       <div className="mt-4 relative">
         <div className="h-[500px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
           <video

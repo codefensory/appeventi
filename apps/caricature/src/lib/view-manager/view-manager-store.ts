@@ -1,5 +1,12 @@
 import { create } from "zustand";
 
+export interface ContactFormData {
+  fullName: string;
+  email: string;
+  phone: string;
+  acceptsCommunications: boolean;
+}
+
 interface ViewState {
   currentView: string | null;
   viewHistory: string[];
@@ -8,9 +15,12 @@ interface ViewState {
   capturedImage: string | null;
   generatedImages: string[];
   selectedImage: string | null;
+  contactFormData: ContactFormData | null;
   setCapturedImage: (img: string) => void;
   setGeneratedImages: (images: string[]) => void;
   setSelectedImage: (img: string) => void;
+  setContactFormData: (data: ContactFormData) => void;
+  clearContactFormData: () => void;
   clearCapturedImage: () => void;
 }
 
@@ -20,6 +30,7 @@ const useViewStore = create<ViewState>((set) => ({
   capturedImage: null,
   generatedImages: [],
   selectedImage: null,
+  contactFormData: null,
 
   setView: (viewId) =>
     set((state) => {
@@ -51,6 +62,10 @@ const useViewStore = create<ViewState>((set) => ({
   setGeneratedImages: (images) => set({ generatedImages: images }),
 
   setSelectedImage: (img) => set({ selectedImage: img }),
+
+  setContactFormData: (data) => set({ contactFormData: data }),
+
+  clearContactFormData: () => set({ contactFormData: null }),
 
   clearCapturedImage: () => set({ capturedImage: null }),
 }));

@@ -33,7 +33,7 @@ Se mantuvieron los scripts originales con el sufijo "2" para compatibilidad:
 ## Características mantenidas
 
 ✅ **Module Federation**: Configurado con `@originjs/vite-plugin-federation`
-✅ **Variables de entorno**: Configuradas en `define` de Vite
+✅ **Variables de entorno**: Las públicas usan `import.meta.env.VITE_*`; las privadas solo están disponibles en las funciones serverless
 ✅ **React**: Configurado con `@vitejs/plugin-react`
 ✅ **CSS/PostCSS**: Configurado con PostCSS
 ✅ **Puerto 8080**: Mantenido tanto para desarrollo como preview
@@ -66,6 +66,27 @@ npm run build:start
 ## Notas técnicas
 
 - La configuración está en formato `.mjs` para compatibilidad con ES modules
-- Se mantuvieron las mismas variables de entorno que Rspack
+- Las variables `VITE_*` se exponen al frontend; las credenciales de Turso y OpenAI se mantienen únicamente en el servidor
 - El Module Federation funciona igual que antes
 - El puerto 8080 se mantiene para compatibilidad con la configuración existente
+
+## Funciones serverless y variables privadas
+
+Las funciones de Vercel están en `api/`:
+
+- `POST /api/contact`: guarda los datos del formulario en Turso.
+- `POST /api/generate`: llama a OpenAI sin exponer la clave al navegador.
+
+En Vercel deben configurarse estas variables privadas, sin el prefijo `VITE_`:
+
+```env
+TURSO_DATABASE_URL=...
+TURSO_AUTH_TOKEN=...
+OPENAI_API_KEY=...
+```
+
+Las únicas variables `VITE_` son las públicas de Cloudinary. Para probar frontend y funciones localmente:
+
+```bash
+pnpm dev:vercel
+```

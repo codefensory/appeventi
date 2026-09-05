@@ -15,13 +15,17 @@ export const SelectView = () => {
   const handleNext = () => {
     if (selectedIdx !== null && generatedImages[selectedIdx]) {
       setSelectedImage(generatedImages[selectedIdx]);
-      setView("download");
+      setView("form");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img
+      src="/logo.png"
+      alt="Santa Clara Camiones"
+      className="brand-logo"
+    />
       <div className="flex flex-row gap-2">
         {generatedImages.map((image, index) => (
           <ImageCard 

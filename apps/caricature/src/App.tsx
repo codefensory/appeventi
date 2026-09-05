@@ -10,6 +10,7 @@ import { CameraView } from "./views/CameraView";
 import { GeneratingView } from "./views/GeneratingView";
 import { SelectView } from "./views/SelectView";
 import { DownloadView } from "./views/DownloadView";
+import { FormView } from "./views/FormView";
 
 const CustomView: typeof View = ({ viewId, children }) => (
   <View
@@ -53,6 +54,9 @@ const App = () => {
       </CustomView>
       <CustomView viewId="select">
         <SelectView />
+      </CustomView>
+      <CustomView viewId="form">
+        <FormView />
       </CustomView>
       <CustomView viewId="download">
         <DownloadView />

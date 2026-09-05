@@ -4,10 +4,17 @@ import useViewStore from "../lib/view-manager/view-manager-store";
 
 export const HomeView = () => {
   const setView = useViewStore((store) => store.setView);
+  const clearContactFormData = useViewStore(
+    (store) => store.clearContactFormData,
+  );
 
   return (
     <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex items-center flex-col gap-12">
-      <img src="logo.png" alt="logo" className="w-72 mb-8" />
+      <img
+        src="/logo.png"
+        alt="Santa Clara Camiones"
+        className="brand-logo"
+      />
       <ImageCarousel className="w-full" />
       <h2 className="text-4xl text-center text-gray-800 mt-6">
         Toca la pantalla y <br />
@@ -15,7 +22,16 @@ export const HomeView = () => {
           Crea tu caricatura
         </span>
       </h2>
-      <Button animated className="text-xl mt-6" onClick={() => setView("preview")}>Iniciar</Button>
+      <Button
+        animated
+        className="text-xl mt-6"
+        onClick={() => {
+          clearContactFormData();
+          setView("preview");
+        }}
+      >
+        Iniciar
+      </Button>
     </div>
   );
 };

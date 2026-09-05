@@ -6,6 +6,7 @@
     "build:dev": "vite build --mode development",
     "build:start": "vite preview",
     "dev": "vite",
+    "dev:vercel": "pnpm dlx vercel dev",
     "build2": "NODE_ENV=production rspack build",
     "build:dev2": "NODE_ENV=development rspack build",
     "build:start2": "cd dist && rspack serve",
@@ -20,6 +21,7 @@
     "@types/node": "^24.0.10",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "@vercel/node": "^12.0.1",
     "@vitejs/plugin-react": "^4.6.0",
     "autoprefixer": "^10.1.0",
     "css-loader": "^7.1.2",
@@ -32,6 +34,7 @@
     "vite": "^5.4.19"
   },
   "dependencies": {
+    "@libsql/client": "^0.18.0",
     "@module-federation/enhanced": "^0.8.9",
     "dotenv": "^17.0.1",
     "embla-carousel-auto-scroll": "^8.6.0",

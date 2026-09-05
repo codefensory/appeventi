@@ -1,9 +1,8 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  readonly CLOUDINARY_UPLOAD_PRESET: string;
-  readonly CLOUDINARY_CLOUD_NAME: string;
-  readonly GENERATING_API_KEY: string;
+  readonly VITE_CLOUDINARY_UPLOAD_PRESET: string;
+  readonly VITE_CLOUDINARY_CLOUD_NAME: string;
 }
 
 interface ImportMeta {
