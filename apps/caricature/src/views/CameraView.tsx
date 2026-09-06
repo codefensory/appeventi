@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import useViewStore from "../lib/view-manager/view-manager-store";
 import { Button } from "../components/Button";
+import { BrandLogo } from "../components/BrandLogo";
 
 export const CameraView = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -32,7 +33,7 @@ export const CameraView = () => {
   const startCountdown = () => {
     setIsCapturing(true);
     setCountdown(3);
-    
+
     const countdownInterval = setInterval(() => {
       setCountdown((prev) => {
         if (prev === null || prev <= 1) {
@@ -45,7 +46,7 @@ export const CameraView = () => {
 
     setTimeout(() => {
       setShowFlash(true);
-      
+
       if (!videoRef.current || !canvasRef.current) return;
       const video = videoRef.current;
       const canvas = canvasRef.current;
@@ -62,64 +63,70 @@ export const CameraView = () => {
       setTimeout(() => {
         setShowFlash(false);
         setIsCapturing(false);
-        
+
         if (stream) {
           stream.getTracks().forEach((track) => track.stop());
         }
-        
+
         setView("generating");
       }, 500);
     }, 3000);
   };
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center gap-8">
-      <img
-      src="/logo.png"
-      alt="Santa Clara Camiones"
-      className="brand-logo"
-    />
-      <div className="mt-4 relative">
-        <div className="h-[500px] w-[400px] rounded-3xl bg-black/10 overflow-hidden flex items-center justify-center">
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            className="w-full h-full object-cover rounded-3xl"
-            style={{ background: "transparent" }}
-          />
-          <canvas ref={canvasRef} style={{ display: "none" }} />
-          
-          {/* Flash overlay */}
-          {showFlash && (
-            <div className="absolute inset-0 bg-white opacity-80 z-10 rounded-3xl" />
-          )}
-          
-          {/* Countdown overlay */}
-          {countdown !== null && (
-            <div className="absolute inset-0 flex items-center justify-center z-20">
-              <div className="text-8xl font-black text-white drop-shadow-2xl">
-                {countdown}
-              </div>
-            </div>
-          )}
-        </div>
+    <div className="screen-content camera-content">
+      <BrandLogo />
+      <div className="camera-frame">
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          className="camera-video"
+          style={{ background: "transparent" }}
+        />
+        <canvas ref={canvasRef} hidden />
+
+        {showFlash && <div className="camera-flash" />}
+
+        {countdown !== null && (
+          <div className="camera-countdown">
+            <strong>{countdown}</strong>
+          </div>
+        )}
       </div>
-      
-      <div className="flex flex-col items-center gap-2">
-        <h2 className="text-3xl font-black text-center text-gray-800">
-          {isCapturing ? "¡Sonríe!" : "Acomódate bien"}
-        </h2>
-        <p className="text-lg text-center text-gray-700">
-          {isCapturing ? "Preparando la foto..." : "Cuando estés listo, toma la foto"}
+
+      <div className="camera-copy">
+        <h2>{isCapturing ? "¡Sonríe!" : "Acomódate bien"}</h2>
+        <p>
+          {isCapturing
+            ? "Preparando la foto..."
+            : "Cuando estés listo, toma la foto"}
         </p>
-        <span className="text-sm text-gray-500">(La imagen solo se usará para la caricatura)</span>
+        <span>(La imagen solo se usará para la caricatura)</span>
       </div>
-      
-      <div className="flex flex-row gap-8 mt-4">
-        <Button className="text-xl" variant="outline" onClick={() => setView("preview")} disabled={isCapturing}>Volver</Button>
-        <Button className="text-xl" onClick={startCountdown} disabled={isCapturing} animated>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="32" height="32">
+
+      <div className="camera-actions">
+        <Button
+          variant="outline"
+          onClick={() => setView("preview")}
+          disabled={isCapturing}
+        >
+          Volver
+        </Button>
+        <Button
+          className="camera-shoot-button"
+          onClick={startCountdown}
+          disabled={isCapturing}
+          animated
+          aria-label="Tomar foto"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
             <circle cx="12" cy="13" r="3.2" stroke="white" strokeWidth="2" />
             <rect x="4" y="7" width="16" height="12" rx="3" stroke="white" strokeWidth="2" />
             <rect x="9" y="2" width="6" height="4" rx="2" stroke="white" strokeWidth="2" />

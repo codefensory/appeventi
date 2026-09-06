@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { getInitialAppId, type AppId } from "../apps";
 
 export interface ContactFormData {
   fullName: string;
@@ -10,7 +11,9 @@ export interface ContactFormData {
 interface ViewState {
   currentView: string | null;
   viewHistory: string[];
+  activeApp: AppId;
   setView: (viewId: string) => void;
+  setActiveApp: (appId: AppId) => void;
   goBack: () => void;
   capturedImage: string | null;
   generatedImages: string[];
@@ -22,11 +25,13 @@ interface ViewState {
   setContactFormData: (data: ContactFormData) => void;
   clearContactFormData: () => void;
   clearCapturedImage: () => void;
+  clearExperience: () => void;
 }
 
 const useViewStore = create<ViewState>((set) => ({
   currentView: null,
   viewHistory: [],
+  activeApp: getInitialAppId(),
   capturedImage: null,
   generatedImages: [],
   selectedImage: null,
@@ -41,6 +46,8 @@ const useViewStore = create<ViewState>((set) => ({
         viewHistory: newViewHistory,
       };
     }),
+
+  setActiveApp: (appId) => set({ activeApp: appId }),
 
   goBack: () =>
     set((state) => {
@@ -68,6 +75,14 @@ const useViewStore = create<ViewState>((set) => ({
   clearContactFormData: () => set({ contactFormData: null }),
 
   clearCapturedImage: () => set({ capturedImage: null }),
+
+  clearExperience: () =>
+    set({
+      capturedImage: null,
+      generatedImages: [],
+      selectedImage: null,
+      contactFormData: null,
+    }),
 }));
 
 export default useViewStore;

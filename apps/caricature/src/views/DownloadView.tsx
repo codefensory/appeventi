@@ -2,6 +2,8 @@ import useViewStore from "../lib/view-manager/view-manager-store";
 import QRCode from "react-qr-code";
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
+import { BrandLogo } from "../components/BrandLogo";
+import { getAppConfig } from "../lib/apps";
 
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -21,6 +23,8 @@ export const DownloadView = () => {
     })();
   const setView = useViewStore((s) => s.setView);
   const clearContactFormData = useViewStore((s) => s.clearContactFormData);
+  const activeApp = useViewStore((s) => s.activeApp);
+  const app = getAppConfig(activeApp);
 
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -49,13 +53,21 @@ export const DownloadView = () => {
           image.src = selectedImage;
         });
 
-        // 2. Cargar el marco
-        const frame = await new Promise<HTMLImageElement>((resolve, reject) => {
-          const image = new window.Image();
-          image.onload = () => resolve(image);
-          image.onerror = reject;
-          image.src = "/frame.png";
-        });
+        // 2. Cargar el marco y el logo de la aplicación seleccionada.
+        const [frame, logo] = await Promise.all([
+          new Promise<HTMLImageElement>((resolve, reject) => {
+            const image = new window.Image();
+            image.onload = () => resolve(image);
+            image.onerror = reject;
+            image.src = "/frame.png";
+          }),
+          new Promise<HTMLImageElement>((resolve, reject) => {
+            const image = new window.Image();
+            image.onload = () => resolve(image);
+            image.onerror = reject;
+            image.src = app.logoSrc;
+          }),
+        ]);
 
         // 3. Crear canvas del tamaño del marco
         const canvas = document.createElement("canvas");
@@ -67,20 +79,47 @@ export const DownloadView = () => {
         // 4. Dibujar el marco como fondo
         ctx.drawImage(frame, 0, 0, frame.width, frame.height);
 
-        // 5. Dibujar la imagen generada en la posición y tamaño deseados
+        // 5. Dibujar la imagen generada con las esquinas redondeadas.
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(40, 25, 1084, 1084, 32);
+        ctx.clip();
         ctx.drawImage(img, 40, 25, 1084, 1084);
+        ctx.restore();
 
-        // 6. Guardar preview del canvas
+        // 6. Reemplazar la identidad fija del marco por la de la app activa.
+        // El área inferior del marco está reservada para el logo y el mensaje.
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 1110, canvas.width, canvas.height - 1110);
+
+        const maxLogoWidth = 310;
+        const maxLogoHeight = 80;
+        const logoScale = Math.min(
+          maxLogoWidth / logo.width,
+          maxLogoHeight / logo.height,
+        );
+        const logoWidth = logo.width * logoScale;
+        const logoHeight = logo.height * logoScale;
+        ctx.drawImage(logo, 80, 1170 + (maxLogoHeight - logoHeight) / 2, logoWidth, logoHeight);
+
+        ctx.fillStyle = "#000000";
+        ctx.font = "700 36px Comfortaa, Arial, sans-serif";
+        ctx.textAlign = "right";
+        app.photoMessage.forEach((line, index) => {
+          ctx.fillText(line, 1080, 1200 + index * 42);
+        });
+
+        // 7. Guardar preview del canvas
         const dataUrl = canvas.toDataURL("image/png");
         if (isMounted) setPreviewUrl(dataUrl);
 
-        // 7. Convertir canvas a blob
+        // 8. Convertir canvas a blob
         const blob = await new Promise<Blob | null>((resolve) =>
           canvas.toBlob(resolve, "image/png")
         );
         if (!blob) throw new Error("No se pudo convertir el canvas a imagen");
 
-        // 8. Subir a Cloudinary
+        // 9. Subir a Cloudinary
         const formData = new FormData();
         formData.append("file", blob, "caricatura.png");
         formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
@@ -97,7 +136,7 @@ export const DownloadView = () => {
           }
           setLoading(false);
         }
-      } catch (e) {
+      } catch {
         if (isMounted) {
           setError("Error procesando o subiendo la imagen");
           setLoading(false);
@@ -108,64 +147,50 @@ export const DownloadView = () => {
     return () => {
       isMounted = false;
     };
-  }, [selectedImage]);
+  }, [selectedImage, app]);
 
   const qrValue = cloudinaryUrl;
 
   return (
-    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full flex flex-col items-center justify-center gap-8">
+    <div className="screen-content download-content">
       {loading ? (
-        <div className="flex flex-col items-center gap-4 mt-8">
-          <div className="w-24 h-24 border-8 border-red-200 border-t-red-500 rounded-full animate-spin" />
-          <span className="text-lg font-bold text-gray-600 animate-pulse">
-            Preparando tu caricatura...
-          </span>
+        <div className="download-loading">
+          <div className="download-spinner" />
+          <span>Preparando tu caricatura...</span>
         </div>
       ) : error ? (
-        <div className="text-red-600 font-bold">{error}</div>
+        <div className="download-error">{error}</div>
       ) : (
         <>
-          <img
-          src="/logo.png"
-          alt="Santa Clara Camiones"
-          className="brand-logo"
-        />
-          <div className="relative flex items-center justify-center">
+          <BrandLogo />
+          <div className="download-image-wrap">
             {previewUrl ? (
               <img
                 src={previewUrl}
                 alt="Caricatura generada"
-                className="w-96 object-cover rounded-3xl border-4 border-red-400 shadow-2xl transition-all duration-300"
-                style={{
-                  boxShadow:
-                    "0 8px 40px 0 rgba(239,68,68,0.25), 0 1.5px 8px 0 rgba(0,0,0,0.10)",
-                }}
+                className="download-image"
               />
             ) : (
-              <div className="w-96 h-96 flex items-center justify-center bg-gray-100 rounded-3xl animate-pulse">
-                <span className="text-gray-400">Cargando preview...</span>
+              <div className="download-image-placeholder">
+                <span>Cargando preview...</span>
               </div>
             )}
           </div>
-          <div className="flex flex-col items-center gap-3 mt-2">
-            <h2 className="text-3xl font-black text-center text-gray-800">
-              ¡Te ves super!
-            </h2>
-            <span className="text-lg font-bold text-gray-700 mb-1">
-              Escanea el QR para descargar
-            </span>
-            <div className="bg-white p-3 rounded-xl shadow-lg border border-red-200">
+          <div className="download-copy">
+            <h2>¡Te ves super!</h2>
+            <span>Escanea el QR para descargar</span>
+            <div className="download-qr">
               <QRCode
                 value={qrValue ?? ""}
                 size={140}
                 bgColor="#fff"
-                fgColor="#ef4444"
+                fgColor="#000000"
                 title="Código QR para descargar la caricatura"
               />
             </div>
           </div>
           <Button
-            className="text-xl mt-2"
+            className="download-button"
             onClick={() => {
               clearContactFormData();
               setView("home");

@@ -2,6 +2,7 @@ import { useState } from "react";
 import useViewStore from "../lib/view-manager/view-manager-store";
 import { ImageCard } from "../components/ImageCard";
 import { Button } from "../components/Button";
+import { BrandLogo } from "../components/BrandLogo";
 
 export const SelectView = () => {
   const generatedImages = useViewStore((s) => s.generatedImages);
@@ -20,29 +21,26 @@ export const SelectView = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-6">
-      <img
-      src="/logo.png"
-      alt="Santa Clara Camiones"
-      className="brand-logo"
-    />
-      <div className="flex flex-row gap-2">
+    <div className="screen-content select-content">
+      <BrandLogo />
+      <div className="select-results">
         {generatedImages.map((image, index) => (
-          <ImageCard 
+          <ImageCard
             key={index}
-            src={image} 
-            selected={selectedIdx === index} 
-            onClick={() => handleSelect(index)} 
+            src={image}
+            className="select-card"
+            selected={selectedIdx === index}
+            onClick={() => handleSelect(index)}
           />
         ))}
       </div>
-      <div className="text-center mt-8">
-        <h2 className="text-3xl font-black">¡TADA!</h2>
-        <p className="text-xl font-bold mt-2">Tu caricatura está lista</p>
-        <p className="text-md mt-1">Selecciona tu favorita</p>
+      <div className="select-copy preview-copy">
+        <h2>¡TADA!</h2>
+        <p>Tu caricatura está lista</p>
+        <small>Selecciona tu favorita</small>
       </div>
       <Button
-        className="mt-8 text-xl"
+        className="select-button"
         disabled={selectedIdx === null}
         onClick={handleNext}
         animated

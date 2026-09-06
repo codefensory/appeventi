@@ -8,6 +8,7 @@ import type {
 import { Button } from "../components/Button";
 import useViewStore from "../lib/view-manager/view-manager-store";
 import type { ContactFormData } from "../lib/view-manager/view-manager-store";
+import { BrandLogo } from "../components/BrandLogo";
 
 const emptyForm: ContactFormData = {
   fullName: "",
@@ -20,6 +21,7 @@ export const FormView = () => {
   const savedForm = useViewStore((store) => store.contactFormData);
   const setContactFormData = useViewStore((store) => store.setContactFormData);
   const setView = useViewStore((store) => store.setView);
+  const activeApp = useViewStore((store) => store.activeApp);
   const [formData, setFormData] = useState<ContactFormData>(
     savedForm ?? emptyForm,
   );
@@ -146,7 +148,7 @@ export const FormView = () => {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, sourceApp: activeApp }),
       });
 
       if (!response.ok) {
@@ -180,11 +182,7 @@ export const FormView = () => {
         onSubmit={handleSubmit}
         autoComplete="off"
       >
-        <img
-          src="/logo.png"
-          alt="Santa Clara Camiones"
-          className="brand-logo contact-form-logo"
-        />
+        <BrandLogo className="contact-form-logo" />
         <h1>
           Ingresa tus datos para
           <br />

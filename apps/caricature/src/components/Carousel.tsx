@@ -1,4 +1,3 @@
-import React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import { ImageCard } from "./ImageCard";
@@ -19,10 +18,11 @@ export const ImageCarousel = ({ className }: { className?: string }) => {
   );
 
   return (
-    <div className={"embla w-full " + className} ref={emblaRef}>
+    <div className={`embla home-carousel ${className ?? ""}`} ref={emblaRef}>
       <div className="embla__container">
         {Array.from({ length: 6 }).map((_, index) => (
           <img
+            key={index}
             className="embla__slide"
             src={`examples/slider-${index + 1}.png`}
             alt={`menu-${index}`}

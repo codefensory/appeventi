@@ -13,48 +13,43 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   alt,
   selected = undefined,
   onClick,
-  className,
+  className = "",
 }) => (
   <div
-    className={`relative flex items-center justify-center w-[320px] h-[320px] ${className} rounded-full`}
+    className={`image-card ${onClick ? "is-clickable" : ""} ${className}`}
     onClick={onClick}
     style={{
-      cursor: onClick ? "pointer" : "default",
-      transition: "box-shadow 0.2s, transform 0.2s",
       transform: selected ? "scale(1.05)" : "scale(1)",
     }}
   >
-    {/* Imagen circular */}
-    <div className="absolute inset-0 flex items-center justify-center">
+    <div className="image-card__image-wrap">
       <img
         src={src}
         alt={alt}
-        className="w-[calc(100%-20px)] h-[calc(100%-20px)] rounded-full object-cover"
+        className={`image-card__image ${selected ? "is-selected" : ""}`}
         draggable={false}
-        style={{
-          boxShadow: selected ? "0 0 24px 0 rgba(255,0,0,0.3)" : undefined,
-        }}
       />
     </div>
-    {(selected === undefined || selected === true) && 
+    {(selected === undefined || selected === true) && (
       <svg
-        className="absolute inset-0 w-full h-full"
+        className="image-card__border"
         viewBox="0 0 320 320"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
       >
         <circle
           cx="160"
           cy="160"
           r="150"
-          stroke="#FF0000"
+          stroke="#000000"
           strokeWidth="4"
           strokeDasharray="850 120"
-          stroke-linecap="round"
+          strokeLinecap="round"
           strokeDashoffset="0"
           transform="rotate(107 160 160)"
         />
       </svg>
-    }
+    )}
   </div>
 );

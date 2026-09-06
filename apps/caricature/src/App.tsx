@@ -11,6 +11,7 @@ import { GeneratingView } from "./views/GeneratingView";
 import { SelectView } from "./views/SelectView";
 import { DownloadView } from "./views/DownloadView";
 import { FormView } from "./views/FormView";
+import { APPS } from "./lib/apps";
 
 const CustomView: typeof View = ({ viewId, children }) => (
   <View
@@ -21,56 +22,77 @@ const CustomView: typeof View = ({ viewId, children }) => (
         "rgba(0, 0, 0, 0.25) 0px 50px 80px -40px, rgba(0, 0, 0, 0.1) 0px 0px 0px 1px",
     }}
   >
-    <div className="absolute top-0 left-0 w-full h-full shadow-2xl" />
-    <div className="absolute top-0 left-0 w-full h-full" />
+    <div className="view-shadow" />
     <div
-      className="w-full h-full bg-repeat opacity-[14%] absolute top-0 left-0"
-      style={{ background: "url(background.png)", backgroundSize: "400px" }}
+      className="view-texture"
+      style={{ backgroundImage: "url(background.png)" }}
     />
-    <div className="absolute top-0 left-0 w-full h-full">{children}</div>
+    <div className="view-content">{children}</div>
   </View>
 );
 
 const App = () => {
   const setView = useViewStore((store) => store.setView);
+  const activeApp = useViewStore((store) => store.activeApp);
 
   useEffect(() => {
     setView("home");
   }, []);
 
   return (
-    <div className="fixed w-full h-full bg-[#e8e8e8]">
-      <CustomView viewId="home">
-        <HomeView />
-      </CustomView>
-      <CustomView viewId="preview">
-        <PreviewView />
-      </CustomView>
-      <CustomView viewId="camera">
-        <CameraView />
-      </CustomView>
-      <CustomView viewId="generating">
-        <GeneratingView />
-      </CustomView>
-      <CustomView viewId="select">
-        <SelectView />
-      </CustomView>
-      <CustomView viewId="form">
-        <FormView />
-      </CustomView>
-      <CustomView viewId="download">
-        <DownloadView />
-      </CustomView>
-      <div
-        className="absolute top-0 right-0 w-30 h-30 bg-transparent"
-        onClick={() => {
-          const currentView = useViewStore.getState().currentView;
+    <main className="app-viewport">
+      <div className="app-stage">
+        <CustomView viewId="home">
+          <HomeView />
+        </CustomView>
+        <CustomView viewId="preview">
+          <PreviewView />
+        </CustomView>
+        <CustomView viewId="camera">
+          <CameraView />
+        </CustomView>
+        <CustomView viewId="generating">
+          <GeneratingView />
+        </CustomView>
+        <CustomView viewId="select">
+          <SelectView />
+        </CustomView>
+        <CustomView viewId="form">
+          <FormView />
+        </CustomView>
+        <CustomView viewId="download">
+          <DownloadView />
+        </CustomView>
+        <button
+          type="button"
+          aria-label="Cambiar aplicación"
+          className="app-switch-hotspot"
+          onClick={() => {
+            const store = useViewStore.getState();
+            const currentView = store.currentView;
 
-          if (currentView !== "home" && currentView !== "generating")
+            if (currentView === "generating") return;
+
+            const currentIndex = APPS.findIndex((app) => app.id === activeApp);
+            const nextApp = APPS[(currentIndex + 1) % APPS.length];
+            store.setActiveApp(nextApp.id);
+            store.clearExperience();
             setView("home");
-        }}
-      ></div>
-    </div>
+          }}
+        />
+        <button
+          type="button"
+          aria-label="Volver al inicio"
+          className="home-hotspot"
+          onClick={() => {
+            const currentView = useViewStore.getState().currentView;
+
+            if (currentView !== "home" && currentView !== "generating")
+              setView("home");
+          }}
+        />
+      </div>
+    </main>
   );
 };
 
