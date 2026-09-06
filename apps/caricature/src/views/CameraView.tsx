@@ -14,7 +14,8 @@ export const CameraView = () => {
   const setCapturedImage = useViewStore((store) => store.setCapturedImage);
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
       .then((mediaStream) => {
         setStream(mediaStream);
         if (videoRef.current) {
@@ -50,13 +51,18 @@ export const CameraView = () => {
       if (!videoRef.current || !canvasRef.current) return;
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
+      const maxDimension = 1536;
+      const scale = Math.min(
+        1,
+        maxDimension / Math.max(video.videoWidth, video.videoHeight),
+      );
+      canvas.width = Math.round(video.videoWidth * scale);
+      canvas.height = Math.round(video.videoHeight * scale);
       const ctx = canvas.getContext("2d");
       if (ctx) {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        // JPEG reduce el tamaño de la petición al endpoint serverless de Vercel.
-        const dataUrl = canvas.toDataURL("image/jpeg", 0.8);
+        // Limita el tamaño de la petición al endpoint serverless de Vercel.
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.75);
         setCapturedImage(dataUrl);
       }
 
@@ -128,8 +134,24 @@ export const CameraView = () => {
             aria-hidden="true"
           >
             <circle cx="12" cy="13" r="3.2" stroke="white" strokeWidth="2" />
-            <rect x="4" y="7" width="16" height="12" rx="3" stroke="white" strokeWidth="2" />
-            <rect x="9" y="2" width="6" height="4" rx="2" stroke="white" strokeWidth="2" />
+            <rect
+              x="4"
+              y="7"
+              width="16"
+              height="12"
+              rx="3"
+              stroke="white"
+              strokeWidth="2"
+            />
+            <rect
+              x="9"
+              y="2"
+              width="6"
+              height="4"
+              rx="2"
+              stroke="white"
+              strokeWidth="2"
+            />
           </svg>
         </Button>
       </div>

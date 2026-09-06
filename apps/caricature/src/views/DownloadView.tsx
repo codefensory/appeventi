@@ -10,8 +10,9 @@ const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const CLOUDINARY_API = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
 export const DownloadView = () => {
+  const storedSelectedImage = useViewStore((s) => s.selectedImage);
   const selectedImage =
-    useViewStore((s) => s.selectedImage) ??
+    storedSelectedImage ??
     (() => {
       // Si no hay imagen seleccionada, usa una imagen random de internet
       const ejemplos = [
@@ -37,8 +38,9 @@ export const DownloadView = () => {
       setLoading(true);
       setError(null);
       try {
-        // Si la imagen ya es una URL remota, no la subas
-        if (selectedImage.startsWith("http")) {
+        // Solo evitamos procesar la imagen de ejemplo. Las URLs devueltas por
+        // la función sí deben pasar por el marco y el logo final.
+        if (!storedSelectedImage && selectedImage.startsWith("http")) {
           setCloudinaryUrl(selectedImage);
           setPreviewUrl(selectedImage);
           setLoading(false);
@@ -48,6 +50,7 @@ export const DownloadView = () => {
         // 1. Cargar imagen original (caricatura)
         const img = await new Promise<HTMLImageElement>((resolve, reject) => {
           const image = new window.Image();
+          image.crossOrigin = "anonymous";
           image.onload = () => resolve(image);
           image.onerror = reject;
           image.src = selectedImage;
@@ -100,7 +103,13 @@ export const DownloadView = () => {
         );
         const logoWidth = logo.width * logoScale;
         const logoHeight = logo.height * logoScale;
-        ctx.drawImage(logo, 80, 1170 + (maxLogoHeight - logoHeight) / 2, logoWidth, logoHeight);
+        ctx.drawImage(
+          logo,
+          80,
+          1170 + (maxLogoHeight - logoHeight) / 2,
+          logoWidth,
+          logoHeight,
+        );
 
         ctx.fillStyle = "#000000";
         ctx.font = "700 36px Comfortaa, Arial, sans-serif";
@@ -115,7 +124,7 @@ export const DownloadView = () => {
 
         // 8. Convertir canvas a blob
         const blob = await new Promise<Blob | null>((resolve) =>
-          canvas.toBlob(resolve, "image/png")
+          canvas.toBlob(resolve, "image/png"),
         );
         if (!blob) throw new Error("No se pudo convertir el canvas a imagen");
 

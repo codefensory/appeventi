@@ -1,6 +1,7 @@
 import OpenAI, { toFile } from "openai";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
+export const runtime = "nodejs";
 export const maxDuration = 60;
 
 const prompts = [
@@ -19,10 +20,43 @@ function getOpenAI() {
   return (openai ??= new OpenAI({ apiKey }));
 }
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse,
-) {
+async function uploadToCloudinary(imageBase64: string) {
+  const cloudName =
+    process.env.CLOUDINARY_CLOUD_NAME ?? process.env.VITE_CLOUDINARY_CLOUD_NAME;
+  const uploadPreset =
+    process.env.CLOUDINARY_UPLOAD_PRESET ??
+    process.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
+  if (!cloudName || !uploadPreset) {
+    throw new Error("Faltan CLOUDINARY_CLOUD_NAME/CLOUDINARY_UPLOAD_PRESET");
+  }
+
+  const response = await fetch(
+    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        file: `data:image/jpeg;base64,${imageBase64}`,
+        upload_preset: uploadPreset,
+      }),
+    },
+  );
+  const data = (await response.json()) as {
+    secure_url?: string;
+    error?: { message?: string };
+  };
+
+  if (!response.ok || !data.secure_url) {
+    throw new Error(
+      `Cloudinary rechazó la imagen: ${data.error?.message ?? response.status}`,
+    );
+  }
+
+  return data.secure_url;
+}
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Método no permitido" });
@@ -45,9 +79,10 @@ export default async function handler(
       return res.status(400).json({ error: "Formato de imagen inválido" });
     }
 
-    const mimeType = match[1].toLowerCase() === "image/jpg"
-      ? "image/jpeg"
-      : match[1].toLowerCase();
+    const mimeType =
+      match[1].toLowerCase() === "image/jpg"
+        ? "image/jpeg"
+        : match[1].toLowerCase();
     const imageBytes = Buffer.from(match[2].replace(/\s/g, ""), "base64");
 
     // Mantiene la petición dentro del límite de Vercel y evita abusos obvios.
@@ -55,12 +90,15 @@ export default async function handler(
       return res.status(413).json({ error: "La imagen es demasiado grande" });
     }
 
-    const fileName = mimeType === "image/png" ? "captured_image.png" : "captured_image.jpg";
+    const fileName =
+      mimeType === "image/png" ? "captured_image.png" : "captured_image.jpg";
     const client = getOpenAI();
 
     const results = await Promise.all(
       prompts.map(async (prompt) => {
-        const imageFile = await toFile(imageBytes, fileName, { type: mimeType });
+        const imageFile = await toFile(imageBytes, fileName, {
+          type: mimeType,
+        });
         return client.images.edit({
           model: "gpt-image-1",
           image: imageFile,
@@ -79,11 +117,18 @@ export default async function handler(
       throw new Error("OpenAI no devolvió las imágenes");
     }
 
-    return res.status(200).json({
-      images: images.map((image) => `data:image/jpeg;base64,${image}`),
-    });
+    // Vercel limita a 4.5 MB el payload de respuesta. Las imágenes de GPT
+    // pueden superar ese límite al devolver dos base64, así que las guardamos
+    // en Cloudinary y devolvemos únicamente sus URLs.
+    const imageUrls = await Promise.all(
+      images.map((image) => uploadToCloudinary(image!)),
+    );
+
+    return res.status(200).json({ images: imageUrls });
   } catch (error) {
     console.error("Error generando imágenes:", error);
-    return res.status(500).json({ error: "No se pudieron generar las imágenes" });
+    return res
+      .status(500)
+      .json({ error: "No se pudieron generar las imágenes" });
   }
 }
