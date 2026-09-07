@@ -3,7 +3,7 @@ import {
   isAdminConfigured,
   setAdminSession,
   verifyAdminPassword,
-} from "../../server/admin-auth";
+} from "../../server/admin-auth.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Cache-Control", "no-store");

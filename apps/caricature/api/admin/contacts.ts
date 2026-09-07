@@ -1,10 +1,10 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { hasAdminSession } from "../../server/admin-auth";
+import { hasAdminSession } from "../../server/admin-auth.js";
 import {
   ensureContactsSchema,
   getDatabase,
   isAppId,
-} from "../../server/database";
+} from "../../server/database.js";
 
 const PAGE_SIZE = 25;
 

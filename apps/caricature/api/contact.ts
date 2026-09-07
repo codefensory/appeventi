@@ -3,7 +3,7 @@ import {
   ensureContactsSchema,
   getDatabase,
   isAppId,
-} from "../server/database";
+} from "../server/database.js";
 
 export default async function handler(
   req: VercelRequest,

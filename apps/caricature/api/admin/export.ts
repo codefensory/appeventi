@@ -1,12 +1,12 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { hasAdminSession } from "../../server/admin-auth";
+import { hasAdminSession } from "../../server/admin-auth.js";
 import {
   APP_IDS,
   ensureContactsSchema,
   getDatabase,
   isAppId,
   type AppId,
-} from "../../server/database";
+} from "../../server/database.js";
 
 const APP_LABELS: Record<AppId, string> = {
   "app-1": "CAMIONES",
