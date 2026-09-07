@@ -1,7 +1,5 @@
 import ReactDOM from "react-dom/client";
 import React, { useEffect } from "react";
-
-import "./index.css";
 import View from "./lib/view-manager/View";
 import useViewStore from "./lib/view-manager/view-manager-store";
 import { HomeView } from "./views/HomeView";
@@ -12,6 +10,7 @@ import { SelectView } from "./views/SelectView";
 import { DownloadView } from "./views/DownloadView";
 import { FormView } from "./views/FormView";
 import { APPS } from "./lib/apps";
+import { AdminView } from "./views/AdminView";
 
 const CustomView: typeof View = ({ viewId, children }) => (
   <View
@@ -97,5 +96,6 @@ const App = () => {
 };
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
+const isAdminRoute = window.location.pathname.replace(/\/+$/, "") === "/admin";
 
-root.render(<App />);
+root.render(isAdminRoute ? <AdminView /> : <App />);
