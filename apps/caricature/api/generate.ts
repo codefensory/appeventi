@@ -100,7 +100,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           type: mimeType,
         });
         return client.images.edit({
-          model: "gpt-image-1",
+          model: "gpt-image-2.5-sunburst",
           image: imageFile,
           prompt,
           quality: "medium",
