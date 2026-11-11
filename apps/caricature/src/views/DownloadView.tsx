@@ -3,7 +3,7 @@ import QRCode from "react-qr-code";
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "../components/BrandLogo";
-import { getAppConfig } from "../lib/apps";
+import { APP } from "../lib/apps";
 
 const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
@@ -24,8 +24,6 @@ export const DownloadView = () => {
     })();
   const setView = useViewStore((s) => s.setView);
   const clearContactFormData = useViewStore((s) => s.clearContactFormData);
-  const activeApp = useViewStore((s) => s.activeApp);
-  const app = getAppConfig(activeApp);
 
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -56,7 +54,7 @@ export const DownloadView = () => {
           image.src = selectedImage;
         });
 
-        // 2. Cargar el marco y el logo de la aplicación seleccionada.
+        // 2. Cargar el marco y el logo de la aplicación.
         const [frame, logo] = await Promise.all([
           new Promise<HTMLImageElement>((resolve, reject) => {
             const image = new window.Image();
@@ -68,7 +66,7 @@ export const DownloadView = () => {
             const image = new window.Image();
             image.onload = () => resolve(image);
             image.onerror = reject;
-            image.src = app.logoSrc;
+            image.src = APP.logoSrc;
           }),
         ]);
 
@@ -90,13 +88,13 @@ export const DownloadView = () => {
         ctx.drawImage(img, 40, 25, 1084, 1084);
         ctx.restore();
 
-        // 6. Reemplazar la identidad fija del marco por la de la app activa.
+        // 6. Reemplazar la identidad fija del marco por la de la aplicación.
         // El área inferior del marco está reservada para el logo y el mensaje.
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 1110, canvas.width, canvas.height - 1110);
 
         const maxLogoWidth = 310;
-        const maxLogoHeight = 80;
+        const maxLogoHeight = 110;
         const logoScale = Math.min(
           maxLogoWidth / logo.width,
           maxLogoHeight / logo.height,
@@ -114,7 +112,7 @@ export const DownloadView = () => {
         ctx.fillStyle = "#000000";
         ctx.font = "700 36px Comfortaa, Arial, sans-serif";
         ctx.textAlign = "right";
-        app.photoMessage.forEach((line, index) => {
+        APP.photoMessage.forEach((line, index) => {
           ctx.fillText(line, 1080, 1200 + index * 42);
         });
 
@@ -156,7 +154,7 @@ export const DownloadView = () => {
     return () => {
       isMounted = false;
     };
-  }, [selectedImage, app]);
+  }, [selectedImage]);
 
   const qrValue = cloudinaryUrl;
 

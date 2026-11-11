@@ -9,6 +9,7 @@ import { Button } from "../components/Button";
 import useViewStore from "../lib/view-manager/view-manager-store";
 import type { ContactFormData } from "../lib/view-manager/view-manager-store";
 import { BrandLogo } from "../components/BrandLogo";
+import { APP } from "../lib/apps";
 
 const emptyForm: ContactFormData = {
   fullName: "",
@@ -21,7 +22,6 @@ export const FormView = () => {
   const savedForm = useViewStore((store) => store.contactFormData);
   const setContactFormData = useViewStore((store) => store.setContactFormData);
   const setView = useViewStore((store) => store.setView);
-  const activeApp = useViewStore((store) => store.activeApp);
   const [formData, setFormData] = useState<ContactFormData>(
     savedForm ?? emptyForm,
   );
@@ -148,7 +148,7 @@ export const FormView = () => {
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, sourceApp: activeApp }),
+        body: JSON.stringify({ ...formData, sourceApp: APP.id }),
       });
 
       if (!response.ok) {
@@ -256,7 +256,7 @@ export const FormView = () => {
           />
           <label htmlFor="acceptsCommunications">
             Acepto recibir promociones, novedades y comunicaciones publicitarias de
-            SANTA CLARA por correo electrónico, llamados o WhatsApp.
+            ART INMOBILIARIA por correo electrónico, llamados o WhatsApp.
           </label>
         </div>
         {consentError && (

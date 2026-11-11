@@ -5,14 +5,9 @@ import {
   ensureContactsSchema,
   getDatabase,
   isAppId,
-  type AppId,
 } from "../../server/database.js";
 
-const APP_LABELS: Record<AppId, string> = {
-  "app-1": "CAMIONES",
-  "app-2": "PICKUP",
-  "app-3": "MULTIMAO",
-};
+const APP_LABEL = "Art Inmobiliaria";
 
 function getSingleQueryValue(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -28,7 +23,7 @@ function escapeCsvValue(value: unknown) {
 }
 
 function getAppLabel(value: unknown) {
-  return isAppId(value) ? APP_LABELS[value] : String(value ?? "");
+  return isAppId(value) ? APP_LABEL : String(value ?? "");
 }
 
 function formatCsvDate(value: unknown) {
@@ -77,7 +72,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           sql: `
             SELECT full_name, email, phone, source_app, created_at
             FROM contacts
-            WHERE source_app IN (?, ?, ?)
+            WHERE source_app IN (${APP_IDS.map(() => "?").join(", ")})
             ORDER BY created_at DESC, id DESC
           `,
           args: [...APP_IDS],
@@ -95,9 +90,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const csv = [header, ...rows]
       .map((row) => row.map(escapeCsvValue).join(","))
       .join("\r\n");
-    const filename = sourceApp
-      ? `interesados-${sourceApp}.csv`
-      : "interesados-todas-las-aplicaciones.csv";
+    const filename = sourceApp ? `interesados-${sourceApp}.csv` : "interesados.csv";
 
     res.setHeader("Content-Type", "text/csv; charset=utf-8");
     res.setHeader("Content-Disposition", `attachment; filename="${filename}"`);

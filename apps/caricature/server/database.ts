@@ -1,6 +1,6 @@
 import { createClient } from "@libsql/client";
 
-export const APP_IDS = ["app-1", "app-2", "app-3"] as const;
+export const APP_IDS = ["app-1"] as const;
 export type AppId = (typeof APP_IDS)[number];
 
 let db: ReturnType<typeof createClient> | undefined;
@@ -37,7 +37,7 @@ export function ensureContactsSchema() {
         )
       `);
 
-      // La tabla puede existir desde antes de agregar las tres aplicaciones.
+      // La tabla puede existir desde antes de agregar la columna de aplicación.
       const columns = await database.execute("PRAGMA table_info(contacts)");
       const hasSourceApp = columns.rows.some((column) => column.name === "source_app");
       if (!hasSourceApp) {

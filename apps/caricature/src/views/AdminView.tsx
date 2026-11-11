@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { APPS, type AppId } from "../lib/apps";
+import { APP, type AppId } from "../lib/apps";
 
 interface Contact {
   id: number;
@@ -18,15 +18,6 @@ interface ContactsResponse {
 }
 
 type SessionStatus = "checking" | "anonymous" | "authenticated";
-type ExportTarget = "all" | AppId;
-
-// Nombres visibles en el panel. Los identificadores app-1/app-2/app-3
-// continúan siendo internos para separar los registros en la base de datos.
-const ADMIN_APP_LABELS: Record<AppId, string> = {
-  "app-1": "CAMIONES",
-  "app-2": "PICKUP",
-  "app-3": "MULTIMAO",
-};
 
 function getErrorMessage(data: unknown, fallback: string) {
   if (
@@ -60,13 +51,13 @@ export const AdminView = () => {
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [activeApp, setActiveApp] = useState<AppId>("app-1");
+  const activeApp: AppId = APP.id;
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [isLoadingContacts, setIsLoadingContacts] = useState(false);
   const [contactsError, setContactsError] = useState<string | null>(null);
-  const [exporting, setExporting] = useState<ExportTarget | null>(null);
+  const [exporting, setExporting] = useState<boolean>(false);
   const [exportError, setExportError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -74,9 +65,10 @@ export const AdminView = () => {
 
     const checkSession = async () => {
       try {
-        const response = await fetch("/api/admin/contacts?app=app-1&page=1", {
-          signal: controller.signal,
-        });
+        const response = await fetch(
+          `/api/admin/contacts?app=${APP.id}&page=1`,
+          { signal: controller.signal },
+        );
 
         if (response.status === 401) {
           setSessionStatus("anonymous");
@@ -188,19 +180,12 @@ export const AdminView = () => {
     }
   };
 
-  const changeApp = (appId: AppId) => {
-    setActiveApp(appId);
-    setPage(1);
-  };
-
-  const handleExport = async (appId?: AppId) => {
-    const target: ExportTarget = appId ?? "all";
-    setExporting(target);
+  const handleExport = async () => {
+    setExporting(true);
     setExportError(null);
 
     try {
-      const query = appId ? `?app=${encodeURIComponent(appId)}` : "";
-      const response = await fetch(`/api/admin/export${query}`);
+      const response = await fetch(`/api/admin/export?app=${APP.id}`);
 
       if (response.status === 401) {
         setSessionStatus("anonymous");
@@ -214,9 +199,7 @@ export const AdminView = () => {
 
       const disposition = response.headers.get("Content-Disposition");
       const filename = disposition?.match(/filename="([^"]+)"/i)?.[1]
-        ?? (appId
-          ? `interesados-${appId}.csv`
-          : "interesados-todas-las-aplicaciones.csv");
+        ?? "interesados.csv";
       const blob = await response.blob();
       const downloadUrl = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -232,7 +215,7 @@ export const AdminView = () => {
         error instanceof Error ? error.message : "No se pudieron exportar los contactos.",
       );
     } finally {
-      setExporting(null);
+      setExporting(false);
     }
   };
 
@@ -242,7 +225,7 @@ export const AdminView = () => {
         <form className="admin-login-card" onSubmit={handleLogin}>
           <p className="admin-eyebrow">Panel privado</p>
           <h1>Interesados</h1>
-          <p>Ingresa la contraseña para consultar las bases de las aplicaciones.</p>
+          <p>Ingresa la contraseña para consultar la base de interesados.</p>
           <label htmlFor="admin-password">Contraseña</label>
           <input
             id="admin-password"
@@ -273,8 +256,8 @@ export const AdminView = () => {
       <section className="admin-panel" aria-labelledby="admin-title">
         <header className="admin-header">
           <div>
-            <h1 id="admin-title">Interesados por aplicación</h1>
-            <p>Consulta independiente de los registros de cada negocio.</p>
+            <h1 id="admin-title">Interesados</h1>
+            <p>Contactos registrados en la aplicación.</p>
           </div>
           <button className="admin-logout-button" type="button" onClick={handleLogout}>
             Cerrar sesión
@@ -282,36 +265,14 @@ export const AdminView = () => {
         </header>
 
         <div className="admin-tabs-row">
-          <nav className="admin-tabs" aria-label="Bases de contactos">
-            {APPS.map((app) => (
-              <button
-                key={app.id}
-                type="button"
-                className={app.id === activeApp ? "is-active" : undefined}
-                aria-pressed={app.id === activeApp}
-                onClick={() => changeApp(app.id)}
-              >
-                {ADMIN_APP_LABELS[app.id]}
-              </button>
-            ))}
-          </nav>
-
           <div className="admin-export-actions">
             <button
               className="admin-export-button"
               type="button"
               onClick={() => void handleExport()}
-              disabled={exporting !== null}
+              disabled={exporting}
             >
-              {exporting === "all" ? "Exportando…" : "Exportar todo"}
-            </button>
-            <button
-              className="admin-export-button admin-export-button--selected"
-              type="button"
-              onClick={() => void handleExport(activeApp)}
-              disabled={exporting !== null}
-            >
-              {exporting === activeApp ? "Exportando…" : "Exportar seleccionado"}
+              {exporting ? "Exportando…" : "Exportar CSV"}
             </button>
           </div>
         </div>
@@ -346,7 +307,7 @@ export const AdminView = () => {
                       </tr>
                     ))
                   ) : contacts.length === 0 ? (
-                    <tr><td colSpan={4} className="admin-empty-cell">Aún no hay interesados para esta aplicación.</td></tr>
+                    <tr><td colSpan={4} className="admin-empty-cell">Aún no hay interesados registrados.</td></tr>
                   ) : (
                     contacts.map((contact) => (
                       <tr key={contact.id}>

@@ -9,7 +9,6 @@ import { GeneratingView } from "./views/GeneratingView";
 import { SelectView } from "./views/SelectView";
 import { DownloadView } from "./views/DownloadView";
 import { FormView } from "./views/FormView";
-import { APPS } from "./lib/apps";
 import { AdminView } from "./views/AdminView";
 
 const CustomView: typeof View = ({ viewId, children }) => (
@@ -32,7 +31,6 @@ const CustomView: typeof View = ({ viewId, children }) => (
 
 const App = () => {
   const setView = useViewStore((store) => store.setView);
-  const activeApp = useViewStore((store) => store.activeApp);
 
   useEffect(() => {
     setView("home");
@@ -62,23 +60,6 @@ const App = () => {
         <CustomView viewId="download">
           <DownloadView />
         </CustomView>
-        <button
-          type="button"
-          aria-label="Cambiar aplicación"
-          className="app-switch-hotspot"
-          onClick={() => {
-            const store = useViewStore.getState();
-            const currentView = store.currentView;
-
-            if (currentView === "generating") return;
-
-            const currentIndex = APPS.findIndex((app) => app.id === activeApp);
-            const nextApp = APPS[(currentIndex + 1) % APPS.length];
-            store.setActiveApp(nextApp.id);
-            store.clearExperience();
-            setView("home");
-          }}
-        />
         <button
           type="button"
           aria-label="Volver al inicio"

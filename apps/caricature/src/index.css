@@ -13,7 +13,8 @@
  * los tamaños crecen o disminuyen juntos sin depender de la resolución.
  */
 :root {
-  --brand-red: #CE0E2D;
+  --brand-primary: #77B829;
+  --brand-strong: #4a7a12;
   font-family: "Comfortaa", sans-serif;
   color: #111111;
   background: #e8e8e8;
@@ -117,25 +118,17 @@ input {
   z-index: 1;
 }
 
-.home-hotspot,
-.app-switch-hotspot {
+.home-hotspot {
   position: absolute;
   z-index: 10;
   top: 0;
+  right: 0;
   width: calc(30 * var(--u));
   height: calc(30 * var(--u));
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
-}
-
-.home-hotspot {
-  right: 0;
-}
-
-.app-switch-hotspot {
-  left: 0;
 }
 
 .screen-content {
@@ -153,9 +146,9 @@ input {
 .brand-logo {
   display: block;
   flex: 0 0 auto;
-  width: calc(288 * var(--u));
+  width: auto;
+  height: calc(110 * var(--u));
   max-width: 100%;
-  height: auto;
   margin: 0 0 calc(32 * var(--u));
   object-fit: contain;
 }
@@ -185,7 +178,7 @@ input {
 
 .home-title-highlight {
   display: inline-block;
-  background: linear-gradient(to right, var(--brand-red), #eab308, #a855f7);
+  background: linear-gradient(to right, var(--brand-strong), #6aa61c, var(--brand-strong));
   background-clip: text;
   color: transparent;
   font-size: calc(48 * var(--u));
@@ -262,7 +255,7 @@ input {
 }
 
 .image-card__image.is-selected {
-  box-shadow: 0 0 calc(24 * var(--u)) 0 rgba(206, 14, 45, 0.3);
+  box-shadow: 0 0 calc(24 * var(--u)) 0 rgba(119, 184, 41, 0.35);
 }
 
 .preview-content {
@@ -412,8 +405,8 @@ input {
   padding: calc(12 * var(--u)) calc(40 * var(--u));
   border: calc(2 * var(--u)) solid transparent;
   border-radius: 999px;
-  color: #ffffff;
-  background: var(--brand-red);
+  color: #111111;
+  background: var(--brand-primary);
   box-shadow: 0 calc(4 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.15);
   font-size: calc(20 * var(--u));
   font-weight: 700;
@@ -423,13 +416,13 @@ input {
 }
 
 .app-button:hover {
-  background: var(--brand-red);
+  background: var(--brand-primary);
 }
 
 .app-button:focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 calc(4 * var(--u)) rgba(206, 14, 45, 0.5),
+    0 0 0 calc(4 * var(--u)) rgba(119, 184, 41, 0.5),
     0 calc(4 * var(--u)) calc(6 * var(--u)) rgba(0, 0, 0, 0.15);
 }
 
@@ -446,13 +439,13 @@ input {
 }
 
 .app-button--outline {
-  color: var(--brand-red);
-  border-color: var(--brand-red);
+  color: var(--brand-strong);
+  border-color: var(--brand-strong);
   background: #ffffff;
 }
 
 .app-button--outline:hover {
-  color: var(--brand-red);
+  color: var(--brand-strong);
   background: #ffffff;
 }
 
@@ -526,7 +519,7 @@ input {
 
 .generating-progress > div {
   height: 100%;
-  background: var(--brand-red);
+  background: var(--brand-primary);
   transition: width 0.2s;
 }
 
@@ -540,7 +533,7 @@ input {
 }
 
 .generating-error-title {
-  color: var(--brand-red) !important;
+  color: var(--brand-strong) !important;
 }
 
 /* Selección */
@@ -609,10 +602,10 @@ input {
   display: block;
   width: 100%;
   height: auto;
-  border: calc(4 * var(--u)) solid var(--brand-red);
+  border: calc(4 * var(--u)) solid var(--brand-primary);
   border-radius: calc(24 * var(--u));
   box-shadow:
-    0 calc(8 * var(--u)) calc(40 * var(--u)) rgba(206, 14, 45, 0.25),
+    0 calc(8 * var(--u)) calc(40 * var(--u)) rgba(119, 184, 41, 0.45),
     0 calc(1.5 * var(--u)) calc(8 * var(--u)) rgba(0, 0, 0, 0.1);
 }
 
@@ -629,7 +622,7 @@ input {
 
 .download-qr {
   padding: calc(12 * var(--u));
-  border: calc(1 * var(--u)) solid var(--brand-red);
+  border: calc(1 * var(--u)) solid var(--brand-primary);
   border-radius: calc(12 * var(--u));
   background: #ffffff;
   box-shadow: 0 calc(4 * var(--u)) calc(12 * var(--u)) rgba(0, 0, 0, 0.12);
@@ -660,14 +653,14 @@ input {
 .download-spinner {
   width: calc(96 * var(--u));
   height: calc(96 * var(--u));
-  border: calc(8 * var(--u)) solid rgba(206, 14, 45, 0.2);
-  border-top-color: var(--brand-red);
+  border: calc(8 * var(--u)) solid rgba(119, 184, 41, 0.25);
+  border-top-color: var(--brand-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 .download-error {
-  color: var(--brand-red);
+  color: var(--brand-strong);
   font-size: calc(18 * var(--u));
   font-weight: 700;
   text-align: center;
@@ -711,7 +704,8 @@ input {
 }
 
 .contact-form-logo {
-  width: calc(288 * var(--u));
+  height: calc(96 * var(--u));
+  width: auto;
   max-width: 100%;
   margin-bottom: calc(34 * var(--u));
 }
@@ -764,7 +758,7 @@ input {
 }
 
 .contact-form-field input:focus {
-  box-shadow: 0 0 0 calc(3 * var(--u)) rgba(206, 14, 45, 0.25);
+  box-shadow: 0 0 0 calc(3 * var(--u)) rgba(119, 184, 41, 0.45);
 }
 
 .contact-form-consent {
@@ -796,7 +790,7 @@ input {
 
 .contact-form-consent.has-error label,
 .contact-form-error {
-  color: var(--brand-red);
+  color: var(--brand-strong);
 }
 
 .contact-form-error {
@@ -812,17 +806,17 @@ input {
   margin-top: calc(73 * var(--u));
   padding: 0;
   border: 0;
-  background: var(--brand-red);
+  background: var(--brand-primary);
   font-size: calc(18 * var(--u));
 }
 
 .contact-form-submit:hover {
-  background: var(--brand-red);
+  background: var(--brand-primary);
 }
 
 /* Reduce el formulario mientras el teclado ocupa buena parte de la pantalla. */
 .contact-form-page.is-keyboard-open .contact-form-logo {
-  width: calc(192 * var(--u));
+  height: calc(64 * var(--u));
   margin-bottom: calc(16 * var(--u));
 }
 
@@ -923,7 +917,7 @@ input {
 
 .admin-eyebrow {
   margin: 0 0 8px;
-  color: var(--brand-red);
+  color: var(--brand-strong);
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -967,42 +961,16 @@ input {
 
 .admin-logout-button:hover,
 .admin-pagination button:not(:disabled):hover {
-  border-color: var(--brand-red);
-  color: var(--brand-red);
+  border-color: var(--brand-strong);
+  color: var(--brand-strong);
 }
 
 .admin-tabs-row {
   display: flex;
-  align-items: flex-end;
-  gap: 16px;
+  justify-content: flex-end;
   margin-top: 32px;
   padding-bottom: 12px;
   border-bottom: 1px solid #e5e7eb;
-}
-
-.admin-tabs {
-  display: flex;
-  flex: 1 1 auto;
-  gap: 8px;
-  min-width: 0;
-  overflow-x: auto;
-}
-
-.admin-tabs button {
-  flex: 0 0 auto;
-  border: 0;
-  border-radius: 9px;
-  padding: 11px 18px;
-  color: #4b5563;
-  background: #f3f4f6;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.admin-tabs button.is-active {
-  color: #ffffff;
-  background: var(--brand-red);
 }
 
 .admin-export-actions {
@@ -1014,19 +982,14 @@ input {
 
 .admin-export-button {
   min-height: 42px;
-  border: 1px solid var(--brand-red);
+  border: 1px solid var(--brand-strong);
   border-radius: 9px;
   padding: 10px 16px;
-  color: #ffffff;
-  background: var(--brand-red);
+  color: #111111;
+  background: var(--brand-primary);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-}
-
-.admin-export-button--selected {
-  color: var(--brand-red);
-  background: #ffffff;
 }
 
 .admin-export-button:hover:not(:disabled) {
@@ -1039,7 +1002,7 @@ input {
 }
 
 .admin-export-button:focus-visible {
-  outline: 3px solid rgba(206, 14, 45, 0.25);
+  outline: 3px solid rgba(119, 184, 41, 0.45);
   outline-offset: 2px;
 }
 
@@ -1109,7 +1072,7 @@ input {
 }
 
 .admin-table-wrap td a {
-  color: #9f1239;
+  color: var(--brand-strong);
   text-decoration: none;
 }
 
@@ -1202,10 +1165,9 @@ input {
 
 .admin-login-card input:focus,
 .admin-logout-button:focus-visible,
-.admin-tabs button:focus-visible,
 .admin-primary-button:focus-visible,
 .admin-pagination button:focus-visible {
-  outline: 3px solid rgba(206, 14, 45, 0.25);
+  outline: 3px solid rgba(119, 184, 41, 0.45);
   outline-offset: 2px;
 }
 
@@ -1215,8 +1177,8 @@ input {
   margin-top: 22px;
   border: 0;
   border-radius: 9px;
-  color: #ffffff;
-  background: var(--brand-red);
+  color: #111111;
+  background: var(--brand-primary);
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -1249,11 +1211,6 @@ input {
   .admin-tabs-row {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .admin-export-actions {
-    flex-direction: column;
-    padding-bottom: 0;
   }
 
   .admin-export-button {
