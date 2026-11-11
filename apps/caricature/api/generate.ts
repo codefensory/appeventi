@@ -4,9 +4,18 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+// El cliente reportó que, cuando la foto no tiene gestos con las manos, el modelo
+// inventaba poses y objetos (taza, libro, pose pensativa). Estas reglas atan el
+// resultado a la foto: solo se exageran los rasgos del rostro.
+const KEEP_PHOTO =
+  "Keep the exact same pose, head angle, expression, hand gestures and framing as the photo. " +
+  "Never add hands, arms or gestures that are not in the photo. " +
+  "Do not add any object, prop or accessory that is not in the photo (no mugs, cups, books, phones, pens, hats, glasses or animals). " +
+  "Keep the same clothing and hairstyle. Only the facial features are exaggerated.";
+
 const prompts = [
-  "A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art. Portrait photo type",
-  "A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art Draw only from the waist up.",
+  `${KEEP_PHOTO} A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art. Portrait photo type`,
+  `${KEEP_PHOTO} A very funny black and white caricature with exaggerated features. Identify the flaws and make them even bigger. Make it very funny. White and gray gradient background. Don't make it so ugly, make it pretty but very funny. Digital art Draw only from the waist up.`,
 ];
 
 let openai: OpenAI | undefined;
